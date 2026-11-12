@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SET100 Market Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+<nav class="mkt" aria-label="เลือกตลาด">
+  <div class="seg" role="group" aria-label="ตลาด">
+    <a href="./">สหรัฐฯ · S&amp;P 500</a>
+    <a href="th.html" aria-current="page">ไทย · SET100</a>
+  </div>
+  <span class="upd">ราคาอัปเดตทุกราว 15 นาทีช่วงตลาดเปิด (ช้ากว่าตลาดราว 15–30 นาที) · เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</span>
+</nav>
+<div class="wrap">
+  <header class="hud card">
+    <div class="logo"><div class="badge">100</div><div style="min-width:0">
+      <h1>แผนที่มูลค่าหุ้นไทย SET100</h1>
+      <p class="sub">กล่องใหญ่ = มูลค่ามาก · เขียวขึ้น แดงลง · <span id="asof">กำลังโหลด…</span></p></div></div>
+    <div style="display:grid;gap:6px;justify-items:end">
+      <div class="coin"><span class="c">฿</span><div><div class="label" id="totLabel">มูลค่ารวมทั้งดัชนี</div><div class="v" id="tot">—</div></div></div>
+      <div id="liveBox"><span class="live" id="live"><i></i><span id="liveTxt">กำลังโหลด…</span></span></div>
+    </div>
+  </header>
+
+  <section class="macro card">
+    <div class="label" id="macroLabel">ภาพรวมตลาด</div>
+    <ul id="macro"></ul>
+  </section>
+
+  <div class="tools">
+    <div class="seg" role="group" aria-label="มุมมอง">
+      <button id="v-co" aria-pressed="true">รายบริษัทตามกลุ่ม</button>
+      <button id="v-sec" aria-pressed="false">ภาพรวมกลุ่ม</button>
+    </div>
+    <input type="search" id="q" placeholder="ค้นหาชื่อย่อหุ้น เช่น DELTA" autocomplete="off">
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div class="card board"><div id="map" role="img" aria-label="Treemap มูลค่าตลาด"></div></div>
+  <div class="legend" id="scale"></div>
+  <p class="note">แตะชื่อกลุ่ม (แถบบนสุดของแต่ละกลุ่ม) เพื่ออ่านข่าวของกลุ่ม · แตะกล่องบริษัทเพื่อดูรายละเอียด · จุดขาวมุมกล่อง = มีข่าว การคาดการณ์ และกราฟงบจริงเทียบเป้า</p>
+
+  <section class="panel card" id="panel" aria-live="polite"></section>
+
+  <section style="display:grid;gap:10px">
+    <div class="label">มูลค่าแต่ละกลุ่ม · % วันล่าสุด · % สัปดาห์ล่าสุด</div>
+    <div class="bars card" id="bars"></div>
+  </section>
+
+  <p class="note">ที่มา: รายชื่อ SET100 รอบ ก.ค.–ธ.ค. 2026 จาก <a href="https://media.set.or.th/set/Documents/2025/Dec/SET50_100_H1_2026.pdf" target="_blank" rel="noopener">ตลาดหลักทรัพย์ฯ</a> ปรับตามการทบทวนรอบ H2 ที่รายงานโดย Kaohoon · ราคาจาก Yahoo Finance (ผ่าน yfinance) ดึงทุกราว 15 นาทีช่วงตลาดเปิด ช้ากว่าตลาดราว 15–30 นาที · มูลค่าตลาดประมาณจากมูลค่าฐาน ณ 11 พ.ย. 2026 ของ <a href="https://stockanalysis.com/list/stock-exchange-of-thailand/" target="_blank" rel="noopener">stockanalysis.com</a> ปรับตามราคาล่าสุด · กลุ่มอุตสาหกรรมตามการจัดกลุ่ม 8 กลุ่มของตลาดหลักทรัพย์ฯ · B = พันล้านบาท, T = ล้านล้านบาท · ข่าวและบทสรุปรวบรวมและสรุปโดย Claude จาก InfoQuest, Kaohoon, ข่าวหุ้นธุรกิจ, กรุงเทพธุรกิจ, Hoonsmart, Investing.com · เป้าราคานักวิเคราะห์จาก Settrade (IAA Consensus) หรือ S&amp;P Global ผ่าน stockanalysis.com · ข้อมูลอาจคลาดเคลื่อน ใช้เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</div>
+<script>
+const CFG={market:"th",cur:"฿",index:"SET100",examples:"DELTA, PTT, KBANK",epsUnit:"บาท",revLabel:"รายได้ไตรมาสล่าสุด (พันล้านบาท · ธนาคารใช้รายได้จากการดำเนินงานรวม)",disc:"บริษัทจดทะเบียนไทยรายงานงบเป็นรายไตรมาส",sec:{"TECH":["เทคโนโลยี","--s-it"],"FINCIAL":["ธุรกิจการเงิน","--s-fin"],"RESOURC":["ทรัพยากร (พลังงาน)","--s-en"],"SERVICE":["บริการ","--s-cd"],"PROPCON":["อสังหาฯ และก่อสร้าง","--s-re"],"INDUS":["สินค้าอุตสาหกรรม","--s-ind"],"AGRO":["เกษตรและอาหาร","--s-cs"],"CONSUMP":["สินค้าอุปโภคบริโภค","--s-hc"]}};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

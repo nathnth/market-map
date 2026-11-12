@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>S&amp;P 500 Market Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Mali:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+</head>
+<body>
+<nav class="mkt" aria-label="เลือกตลาด">
+  <div class="seg" role="group" aria-label="ตลาด">
+    <a href="./" aria-current="page">สหรัฐฯ · S&amp;P 500</a>
+    <a href="th.html">ไทย · SET100</a>
+  </div>
+  <span class="upd">ราคาอัปเดตทุกราว 15 นาทีช่วงตลาดเปิด (ช้ากว่าตลาดราว 15–30 นาที) · เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</span>
+</nav>
+<div class="wrap">
+  <header class="hud card">
+    <div class="logo"><div class="badge">500</div><div style="min-width:0">
+      <h1>แผนที่มูลค่าบริษัท S&amp;P 500</h1>
+      <p class="sub">กล่องใหญ่ = มูลค่ามาก · เขียวขึ้น แดงลง · <span id="asof">กำลังโหลด…</span></p></div></div>
+    <div style="display:grid;gap:6px;justify-items:end">
+      <div class="coin"><span class="c">$</span><div><div class="label" id="totLabel">มูลค่ารวมทั้งดัชนี</div><div class="v" id="tot">—</div></div></div>
+      <div id="liveBox"><span class="live" id="live"><i></i><span id="liveTxt">กำลังโหลด…</span></span></div>
+    </div>
+  </header>
+
+  <section class="macro card">
+    <div class="label" id="macroLabel">ภาพรวมตลาด</div>
+    <ul id="macro"></ul>
+  </section>
+
+  <div class="tools">
+    <div class="seg" role="group" aria-label="มุมมอง">
+      <button id="v-co" aria-pressed="true">รายบริษัทตามกลุ่ม</button>
+      <button id="v-sec" aria-pressed="false">ภาพรวมกลุ่ม</button>
+    </div>
+    <input type="search" id="q" placeholder="ค้นหา ticker หรือชื่อ เช่น SNDK" autocomplete="off">
+  </div>
+  <div class="chips" id="chips"></div>
+
+  <div class="card board"><div id="map" role="img" aria-label="Treemap มูลค่าตลาด"></div></div>
+  <div class="legend" id="scale"></div>
+  <p class="note">แตะชื่อกลุ่ม (แถบบนสุดของแต่ละกลุ่ม) เพื่ออ่านข่าวของกลุ่ม · แตะกล่องบริษัทเพื่อดูรายละเอียด · จุดขาวมุมกล่อง = มีข่าว การคาดการณ์ และกราฟงบจริงเทียบเป้า</p>
+
+  <section class="panel card" id="panel" aria-live="polite"></section>
+
+  <section style="display:grid;gap:10px">
+    <div class="label">มูลค่าแต่ละกลุ่ม · % วันล่าสุด · % สัปดาห์ล่าสุด</div>
+    <div class="bars card" id="bars"></div>
+  </section>
+
+  <p class="note">ที่มา: ราคาจาก Yahoo Finance (ผ่าน yfinance) ดึงทุกราว 15 นาทีช่วงตลาดเปิด ช้ากว่าตลาดราว 15–30 นาที · มูลค่าตลาดประมาณจากมูลค่าฐาน ณ 11 พ.ย. 2026 ของ <a href="https://chartrow.com/sp500-equal-weight/companies" target="_blank" rel="noopener">ChartRow</a> ปรับตามราคาล่าสุด (EA, WBD, KVUE, AVB ไม่มีราคาแล้ว จึงแสดงเป็นสีเทา) · กลุ่มธุรกิจ GICS จาก <a href="https://github.com/datasets/s-and-p-500-companies" target="_blank" rel="noopener">datasets/s-and-p-500-companies</a> · ข่าว บทสรุป และผลตอบแทนรายสัปดาห์รวบรวมและสรุปโดย Claude จาก CNBC, TheStreet, Reuters, Motley Fool, 24/7 Wall St., Investomine · EPS รายไตรมาสจาก ChartRow · เป้าราคานักวิเคราะห์จาก stockanalysis.com · ข้อมูลอาจคลาดเคลื่อน ใช้เพื่อการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</div>
+<script>
+const CFG={market:"us",cur:"$",index:"S&amp;P 500",examples:"NVDA, AAPL, SNDK",epsUnit:"ดอลลาร์",revLabel:"รายได้: ไตรมาสล่าสุด และแนวทางไตรมาสถัดไป (พันล้านดอลลาร์)",disc:"บริษัทในสหรัฐฯ รายงานงบเป็นรายไตรมาส จึงไม่มีตัวเลขรายเดือนให้เทียบ",sec:{"Information Technology":["เทคโนโลยีสารสนเทศ","--s-it"],"Financials":["การเงิน","--s-fin"],"Communication Services":["สื่อสารและบริการ","--s-cm"],"Consumer Discretionary":["สินค้าฟุ่มเฟือย","--s-cd"],"Health Care":["สุขภาพ","--s-hc"],"Industrials":["อุตสาหกรรม (รวมขนส่ง)","--s-ind"],"Consumer Staples":["สินค้าจำเป็น","--s-cs"],"Energy":["พลังงาน","--s-en"],"Utilities":["สาธารณูปโภค","--s-ut"],"Real Estate":["อสังหาริมทรัพย์","--s-re"],"Materials":["วัตถุดิบ","--s-mat"]}};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

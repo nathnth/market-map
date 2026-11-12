@@ -1,0 +1,43 @@
+name: Save daily history
+
+on:
+  schedule:
+    # 17:15 Bangkok, after the Thai close
+    - cron: "15 10 * * 1-5"
+    # 21:30 UTC, after the US close in both standard and daylight time
+    - cron: "30 21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: history
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: |
+          python scripts/fetch_prices.py history th
+          python scripts/fetch_prices.py history us
+      - name: Commit history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add history
+          git diff --cached --quiet && exit 0
+          git commit -m "Update price history $(date -u +%F)"
+          git push
+      # Pushes made with GITHUB_TOKEN do not trigger workflows, so redeploy explicitly.
+      - name: Redeploy site
+        run: gh workflow run update-site.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}

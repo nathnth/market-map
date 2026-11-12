@@ -1,0 +1,101 @@
+ticker,name,sector,base_mcap_b,base_price
+DELTA,Delta Electronics (Thailand),TECH,2430.0,194.5
+PTT,PTT,RESOURC,1080.0,38.25
+ADVANC,Advanced Info Service,TECH,1020.0,344.0
+GULF,Gulf Development,RESOURC,944.94,63.25
+AOT,Airports of Thailand,SERVICE,875.0,61.25
+KTB,Krung Thai Bank,FINCIAL,590.49,42.25
+KBANK,Kasikornbank,FINCIAL,571.3,243.0
+PTTEP,PTT Exploration and Production,RESOURC,567.71,143.0
+SCB,SCB X,FINCIAL,515.17,153.0
+TRUE,True Corporation,TECH,452.63,13.1
+CPALL,CP ALL,SERVICE,418.84,47.0
+BBL,Bangkok Bank,FINCIAL,346.45,181.5
+BDMS,Bangkok Dusit Medical Services,SERVICE,319.43,20.1
+CPN,Central Pattana,PROPCON,299.57,66.75
+SCC,Siam Cement,PROPCON,288.0,240.0
+TTB,TMBThanachart Bank,FINCIAL,236.34,2.7
+CRC,Central Retail,SERVICE,188.47,31.25
+PTTGC,PTT Global Chemical,INDUS,187.12,41.5
+CPF,Charoen Pokphand Foods,AGRO,163.19,20.0
+BH,Bumrungrad Hospital,SERVICE,157.4,198.0
+GPSC,Global Power Synergy,RESOURC,151.56,53.75
+OR,PTT Oil and Retail Business,RESOURC,150.0,12.5
+THAI,Thai Airways International,SERVICE,147.18,5.2
+TOP,Thai Oil,RESOURC,131.8,59.0
+TLI,Thai Life Insurance,FINCIAL,130.53,11.4
+IVL,Indorama Ventures,INDUS,127.45,22.7
+MINT,Minor International,AGRO,122.05,21.7
+SCGP,SCG Packaging,INDUS,116.98,27.25
+AWC,Asset World Corp,PROPCON,101.84,3.18
+TISCO,TISCO Financial Group,FINCIAL,100.08,125.0
+KKP,Kiatnakin Phatra Bank,FINCIAL,98.1,114.0
+BEM,Bangkok Expressway and Metro,SERVICE,92.86,6.2
+KTC,Krungthai Card,FINCIAL,92.18,35.75
+CCET,Cal-Comp Electronics (Thailand),TECH,80.47,7.7
+BJC,Berli Jucker,SERVICE,80.16,20.0
+RATCH,Ratch Group,RESOURC,79.93,36.75
+HMPRO,Home Product Center,SERVICE,79.91,6.2
+TCAP,Thanachart Capital,FINCIAL,77.86,74.25
+WHA,WHA Corporation,PROPCON,77.72,5.2
+COM7,Com7,SERVICE,76.04,32.25
+EGCO,Electricity Generating,RESOURC,70.28,133.5
+KCE,KCE Electronics,TECH,70.04,59.25
+BCP,Bangchak Corporation,RESOURC,65.83,45.0
+MTC,Muangthai Capital,FINCIAL,64.66,30.5
+OSP,Osotspa,AGRO,59.77,19.9
+CENTEL,Central Plaza Hotel,SERVICE,59.74,44.25
+BGRIM,B.Grimm Power,RESOURC,59.7,22.9
+SPRC,Star Petroleum Refining,RESOURC,58.53,13.5
+TFG,Thaifoods Group,AGRO,57.88,9.75
+BANPU,Banpu,RESOURC,57.1,14.1
+CBG,Carabao Group,AGRO,56.75,56.75
+MRDIYT,MR. D.I.Y. Holding (Thailand),SERVICE,53.25,8.85
+TU,Thai Union Group,AGRO,51.27,13.3
+IRPC,IRPC,RESOURC,51.03,2.5
+TIDLOR,Tidlor Holdings,FINCIAL,47.18,16.4
+GUNKUL,Gunkul Engineering,RESOURC,44.41,5.0
+BTG,Betagro,AGRO,41.74,21.9
+LH,Land and Houses,PROPCON,41.59,3.48
+BA,Bangkok Airways,SERVICE,41.28,19.9
+PLANB,Plan B Media,SERVICE,40.71,8.85
+GLOBAL,Siam Global House,SERVICE,39.21,7.0
+BLA,Bangkok Life Assurance,FINCIAL,38.25,22.4
+SAWAD,Srisawad Corporation,FINCIAL,37.38,22.5
+HANA,Hana Microelectronics,TECH,35.19,39.75
+AMATA,Amata Corporation,PROPCON,32.78,28.5
+RCL,Regional Container Lines,SERVICE,32.53,39.25
+MEGA,Mega Lifesciences,CONSUMP,30.95,35.5
+TOA,TOA Paint (Thailand),PROPCON,30.24,15.6
+CK,CH. Karnchang,PROPCON,30.08,17.9
+BTS,BTS Group Holdings,SERVICE,29.93,1.86
+SPALI,Supalai,PROPCON,29.45,15.5
+STA,Sri Trang Agro-Industry,AGRO,29.18,19.0
+STECON,Stecon Group,PROPCON,28.41,18.7
+WHAUP,WHA Utilities and Power,RESOURC,27.92,7.3
+BCH,Bangkok Chain Hospital,SERVICE,27.43,11.0
+TASCO,Tipco Asphalt,PROPCON,26.52,16.8
+STGT,Sri Trang Gloves (Thailand),INDUS,25.4,9.2
+AP,AP (Thailand),PROPCON,25.17,8.0
+SIRI,Sansiri,PROPCON,24.96,1.42
+AEONTS,AEON Thana Sinsap (Thailand),FINCIAL,22.1,89.75
+BAM,Bangkok Commercial Asset Mgmt,FINCIAL,21.01,6.5
+VGI,VGI,SERVICE,20.68,0.98
+BCPG,BCPG,RESOURC,20.37,6.8
+PRM,Prima Marine,SERVICE,19.31,8.7
+AURA,Aurora Design,CONSUMP,18.73,14.0
+ICHI,Ichitan Group,AGRO,18.72,14.4
+EA,Energy Absolute,RESOURC,18.27,2.46
+ERW,Erawan Group,SERVICE,18.18,3.72
+M,MK Restaurant Group,AGRO,18.07,20.0
+CHG,Chularat Hospital,SERVICE,17.49,1.59
+JMT,JMT Network Services,FINCIAL,15.33,10.5
+JMART,Jaymart Group Holdings,SERVICE,14.93,10.2
+PR9,Praram 9 Hospital,SERVICE,14.78,18.8
+QH,Quality Houses,PROPCON,14.74,1.39
+PTG,PTG Energy,RESOURC,12.36,7.4
+DOHOME,Dohome,SERVICE,12.17,3.46
+GFPT,GFPT,AGRO,12.16,9.7
+MOSHI,Moshi Moshi Retail,SERVICE,12.04,36.5
+AAV,Asia Aviation,SERVICE,10.02,0.78
+GST,"Gulf Space Technology (ex-Thaicom, THCOM)",TECH,9.7,8.85
