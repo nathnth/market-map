@@ -43,7 +43,14 @@
 - `tgt` คือเป้าราคา [ต่ำสุด, เฉลี่ย, สูงสุด]
 - `br` คือจำนวนนักวิเคราะห์ [Strong Buy, Buy, Hold, Sell, Strong Sell]
 - `eps` แต่ละไตรมาสคือ [ไตรมาส, คาด, จริง] โดยใส่คาดเป็น `null` ได้
-- ทุก key ใน `companies` ไม่บังคับ ยกเว้น `news` และ `next` ถ้าไม่มีให้ตัดบริษัทนั้นออก
+- ใน `companies` ต้องมี `news` และ `next` เสมอ ส่วน key อื่นใส่เป็น `null` หรือไม่ใส่ก็ได้
+- ตรวจรูปแบบก่อน commit ด้วย `python scripts/check_content.py` ถ้าไม่ผ่าน `update-site` จะไม่ deploy และหน้าเว็บเดิมยังอยู่
+
+## Claude อัปเดตข่าวอย่างไร
+
+routine บน claude.ai รันทุกวันทำการ แก้ `content/us.json` หรือ `content/th.json` แล้ว push
+- push เข้า `main` ตรงๆ: deploy หน้าเว็บทันที
+- push เข้า branch `claude/...`: workflow `merge-content.yml` ตรวจว่าแก้แค่ไฟล์ content แล้ว merge เข้า `main` และ deploy ให้
 
 ## รันบนเครื่อง
 

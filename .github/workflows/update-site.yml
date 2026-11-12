@@ -32,7 +32,8 @@ jobs:
           python-version: "3.13"
           cache: pip
       - run: pip install -r requirements.txt
-      # A failed fetch stops the run, so the previous deployment stays online.
+      # A failed check or fetch stops the run, so the previous deployment stays online.
+      - run: python scripts/check_content.py
       - name: Fetch latest prices
         run: |
           python scripts/fetch_prices.py latest us

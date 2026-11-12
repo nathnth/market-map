@@ -1,0 +1,52 @@
+# Claude routines may only be allowed to push claude/* branches. This brings their
+# content updates into main, refusing any branch that touches other files.
+name: Merge content from Claude
+
+on:
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: merge-content
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: List changed files
+        id: changed
+        run: |
+          files=$(git diff --name-only origin/main...HEAD)
+          echo "$files"
+          if echo "$files" | grep -v -E '^content/(us|th)\.json$' | grep -q .; then
+            echo "::error::Branch changes files outside content/us.json and content/th.json"
+            exit 1
+          fi
+          echo "files=$(echo $files)" >> "$GITHUB_OUTPUT"
+      - name: Merge into main
+        if: steps.changed.outputs.files != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout main
+          # Take only the files this branch changed, so an older branch cannot undo the other market's update.
+          git checkout "$GITHUB_SHA" -- ${{ steps.changed.outputs.files }}
+          python3 scripts/check_content.py
+          git add content
+          git diff --cached --quiet && exit 0
+          git commit -m "Update content from $GITHUB_REF_NAME"
+          git push origin main
+      - name: Redeploy site
+        if: steps.changed.outputs.files != ''
+        run: gh workflow run update-site.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Delete branch
+        run: git push origin --delete "$GITHUB_REF_NAME"
