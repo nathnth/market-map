@@ -1,0 +1,46 @@
+name: Save backtest history
+
+# Run by hand when a longer price history is needed for testing trading ideas.
+# Writes backtest/<market>/*.csv; the site and the daily history are not touched.
+on:
+  workflow_dispatch:
+    inputs:
+      market:
+        description: "th or us"
+        default: "th"
+      period:
+        description: "yfinance period, e.g. 3y"
+        default: "3y"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: history
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python scripts/fetch_prices.py history "$MARKET" --period "$PERIOD" --out backtest
+        env:
+          MARKET: ${{ inputs.market }}
+          PERIOD: ${{ inputs.period }}
+      - name: Commit backtest history
+        env:
+          MARKET: ${{ inputs.market }}
+          PERIOD: ${{ inputs.period }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backtest
+          git diff --cached --quiet && exit 0
+          git commit -m "Update backtest history $MARKET $PERIOD $(date -u +%F)"
+          git pull --rebase
+          git push

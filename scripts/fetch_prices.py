@@ -2,6 +2,7 @@
 
   python scripts/fetch_prices.py latest us   -> site/data/latest-us.json (current price and % change)
   python scripts/fetch_prices.py history th  -> history/th/<TICKER>.csv (1 year of daily OHLCV)
+  python scripts/fetch_prices.py history th --period 3y --out backtest  -> backtest/th/<TICKER>.csv (longer history for backtests)
 """
 import argparse
 import csv
@@ -89,12 +90,12 @@ def write_latest(market):
     print(f"{market}: wrote {len(quotes)} quotes to {out.relative_to(ROOT)}")
 
 
-def write_history(market):
+def write_history(market, period=HISTORY_PERIOD, out="history"):
     tickers = load_universe(market)
-    bars = download(market, tickers, HISTORY_PERIOD)
+    bars = download(market, tickers, period)
     require_coverage(market, bars, tickers)
 
-    folder = ROOT / "history" / market
+    folder = ROOT / out / market
     folder.mkdir(parents=True, exist_ok=True)
     for ticker, rows in bars.items():
         table = pd.DataFrame({
@@ -113,8 +114,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["latest", "history"])
     parser.add_argument("market", choices=["us", "th"])
+    parser.add_argument("--period", default=HISTORY_PERIOD, help="history only, e.g. 3y")
+    parser.add_argument("--out", default="history", help="history only: top folder to write into")
     args = parser.parse_args()
-    (write_latest if args.mode == "latest" else write_history)(args.market)
+    if args.mode == "latest":
+        write_latest(args.market)
+    else:
+        write_history(args.market, args.period, args.out)
 
 
 if __name__ == "__main__":
