@@ -53,6 +53,30 @@ def read_history(path):
     return rows
 
 
+def set_index_row():
+    """The SET index itself as one extra row, ticker "^SET", so pages can compare against the market.
+    Pages must skip tickers that start with "^" when picking stocks. Returns None if Yahoo has no data."""
+    try:
+        import yfinance as yf
+        frame = yf.download("^SET.BK", period="6mo", interval="1d", auto_adjust=False, progress=False)
+        if frame is None or frame.empty:
+            return None
+        if hasattr(frame.columns, "nlevels") and frame.columns.nlevels > 1:
+            frame.columns = frame.columns.get_level_values(0)
+        rows = [{"date": d.strftime("%Y-%m-%d"), "open": float(r["Open"]), "high": float(r["High"]),
+                 "low": float(r["Low"]), "close": float(r["Close"])}
+                for d, r in frame.dropna(subset=["Close"]).iterrows()]
+    except Exception as e:  # the index row is a nice-to-have; never fail the stock scan over it
+        print("SET index skipped:", e)
+        return None
+    if len(rows) < 61:
+        return None
+    r4 = lambda v: round(v, 4)
+    now, prev, last = stats(rows), stats(rows[:-1]), rows[-1]
+    return (["^SET"] + [r4(v) for v in now] + ["", "", last["date"], rows[-2]["date"]]
+            + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])])
+
+
 def main(market):
     out = []
     for ticker in load_universe(market):
@@ -66,6 +90,10 @@ def main(market):
         now, prev, last = stats(rows), stats(rows[:-1]), rows[-1]
         out.append([ticker] + [r4(v) for v in now] + ["", "", last["date"], rows[-2]["date"]]
                    + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])])
+    if market == "th":
+        idx = set_index_row()
+        if idx:
+            out.append(idx)
     dest = ROOT / "history" / f"scan-{market}.csv"
     with open(dest, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
