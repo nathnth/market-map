@@ -54,8 +54,8 @@ def read_history(path):
 
 
 def set_index_row():
-    """The SET index itself as one extra row, ticker "^SET", so pages can compare against the market.
-    Pages must skip tickers that start with "^" when picking stocks. Returns None if Yahoo has no data."""
+    """The SET index itself, in the scan-file columns, written to its own file (history/set-index.csv)
+    so pages can compare against the market without it ever being picked as a stock. None if Yahoo has no data."""
     try:
         import yfinance as yf
         frame = yf.download("^SET.BK", period="6mo", interval="1d", auto_adjust=False, progress=False)
@@ -93,7 +93,12 @@ def main(market):
     if market == "th":
         idx = set_index_row()
         if idx:
-            out.append(idx)
+            dest_idx = ROOT / "history" / "set-index.csv"
+            with open(dest_idx, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f, lineterminator="\n")
+                w.writerow(HEADER)
+                w.writerow(idx)
+            print(f"{dest_idx.relative_to(ROOT)}: SET {idx[1]} as of {idx[13]}")
     dest = ROOT / "history" / f"scan-{market}.csv"
     with open(dest, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f, lineterminator="\n")
