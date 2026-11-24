@@ -33,7 +33,7 @@ def history_filename(ticker):
 
 
 def yahoo_symbol(market, ticker):
-    return f"{ticker}.BK" if market == "th" else ticker.replace(".", "-")
+    return f"{ticker}.BK" if market in ("th", "thall") else ticker.replace(".", "-")
 
 
 def download_once(symbols, period, threads):
@@ -113,7 +113,7 @@ def write_history(market, period=HISTORY_PERIOD, out="history"):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["latest", "history"])
-    parser.add_argument("market", choices=["us", "th"])
+    parser.add_argument("market", choices=["us", "th", "thall"])  # thall: every SET stock, for backtests only
     parser.add_argument("--period", default=HISTORY_PERIOD, help="history only, e.g. 3y")
     parser.add_argument("--out", default="history", help="history only: top folder to write into")
     args = parser.parse_args()
