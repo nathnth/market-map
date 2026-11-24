@@ -29,9 +29,6 @@ jobs:
           python scripts/fetch_prices.py history th
           python scripts/fetch_prices.py history us
           python scripts/build_scan.py th
-      - name: Fetch Thai news headlines
-        continue-on-error: true  # news is a nice-to-have; never block the price history
-        run: python scripts/fetch_news.py
       - name: Commit history
         run: |
           git config user.name "github-actions[bot]"
