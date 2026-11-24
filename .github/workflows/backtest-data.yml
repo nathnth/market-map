@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       market:
-        description: "th or us"
+        description: "th, thall (every SET stock) or us"
         default: "th"
       period:
         description: "yfinance period, e.g. 3y"
