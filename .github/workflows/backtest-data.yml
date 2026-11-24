@@ -32,6 +32,22 @@ jobs:
         env:
           MARKET: ${{ inputs.market }}
           PERIOD: ${{ inputs.period }}
+      - name: Save the Thai market benchmark (SET50 ETF TDEX)
+        if: ${{ inputs.market == 'th' }}
+        env:
+          PERIOD: ${{ inputs.period }}
+        run: |
+          python - <<'PY'
+          import os, pathlib, yfinance as yf
+          frame = yf.download("TDEX.BK", period=os.environ["PERIOD"], interval="1d", auto_adjust=False, progress=False)
+          if frame is None or frame.empty:
+              print("TDEX: no data"); raise SystemExit(0)
+          if frame.columns.nlevels > 1:
+              frame.columns = frame.columns.get_level_values(0)
+          out = pathlib.Path("backtest/bench"); out.mkdir(parents=True, exist_ok=True)
+          frame[["Open", "High", "Low", "Close", "Adj Close", "Volume"]].dropna(subset=["Close"]).round(4).to_csv(out / "TDEX.csv", index_label="Date")
+          print("TDEX rows:", len(frame))
+          PY
       - name: Commit backtest history
         env:
           MARKET: ${{ inputs.market }}
