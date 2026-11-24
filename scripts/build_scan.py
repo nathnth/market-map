@@ -1,6 +1,6 @@
 """Summarise each ticker's price history into one file, for Google Sheets.
 
-  python scripts/build_scan.py th  -> history/scan-th.csv
+  python scripts/build_scan.py th  -> history/scan-th.csv (+ history/mom-th.csv, history/set-index.csv)
 
 One row per ticker with the indicators the trade-journal and AI-simulation pages use:
 moving averages, recent lows/highs and average daily range, both as of the latest close
@@ -82,8 +82,26 @@ def set_index_row():
     return None
 
 
+MOM_HEADER = ["ticker", "close", "close21ago", "close147ago", "sma200", "asof", "gap"]
+
+
+def momentum_row(ticker, rows):
+    """Inputs for the momentum strategy: 6-month return skipping the last month = close21ago / close147ago - 1,
+    and the 200-day average for the trend check. gap = 1 when the last 150 bars have a hole longer than
+    3 weeks (bad data), so pages can skip the ticker. None without 200 bars."""
+    if len(rows) < 200:
+        return None
+    from datetime import date
+    days = [date.fromisoformat(r["date"]) for r in rows[-150:]]
+    gap = int(any((b - a).days > 21 for a, b in zip(days, days[1:])))
+    close = [r["close"] for r in rows]
+    r4 = lambda v: round(v, 4)
+    return [ticker, r4(close[-1]), r4(close[-22]), r4(close[-148]), r4(sum(close[-200:]) / 200), rows[-1]["date"], gap]
+
+
 def main(market):
     out = []
+    mom = []
     for ticker in load_universe(market):
         path = ROOT / "history" / market / history_filename(ticker)
         if not path.exists():
@@ -92,10 +110,19 @@ def main(market):
         if len(rows) < 61:  # needs 60 bars for the latest stats and one more for the previous day's
             continue
         r4 = lambda v: round(v, 4)
+        m = momentum_row(ticker, rows)
+        if m:
+            mom.append(m)
         now, prev, last = stats(rows), stats(rows[:-1]), rows[-1]
         out.append([ticker] + [r4(v) for v in now] + ["", "", last["date"], rows[-2]["date"]]
                    + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])])
     if market == "th":
+        dest_mom = ROOT / "history" / "mom-th.csv"
+        with open(dest_mom, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f, lineterminator="\n")
+            w.writerow(MOM_HEADER)
+            w.writerows(mom)
+        print(f"{dest_mom.relative_to(ROOT)}: {len(mom)} tickers")
         idx = set_index_row()
         if idx:
             dest_idx = ROOT / "history" / "set-index.csv"
