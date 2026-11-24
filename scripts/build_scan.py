@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 HEADER = [
     "ticker", "close", "sma20", "sma50", "low10", "low20", "low60", "high20", "high60", "atr14", "close22ago",
     "eps", "pe", "asof", "prevdate", "prevclose", "psma20", "psma50", "plow10", "plow20", "plow60",
-    "phigh20", "phigh60", "patr14", "open", "high", "low",
+    "phigh20", "phigh60", "patr14", "open", "high", "low", "prev2close", "prevlow",
 ]
 
 
@@ -78,7 +78,8 @@ def set_index_row():
         r4 = lambda v: round(v, 4)
         now, prev, last = stats(rows), stats(rows[:-1]), rows[-1]
         return ([label] + [r4(v) for v in now] + ["", "", last["date"], rows[-2]["date"]]
-                + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])])
+                + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])]
+                + [r4(rows[-3]["close"]), r4(rows[-2]["low"])])
     return None
 
 
@@ -93,8 +94,11 @@ def main(market):
             continue
         r4 = lambda v: round(v, 4)
         now, prev, last = stats(rows), stats(rows[:-1]), rows[-1]
+        # prev2close / prevlow: the close two bars back and the previous bar's low, so the AI can check that
+        # yesterday touched support and closed up before buying (a "bounce confirmed" entry)
         out.append([ticker] + [r4(v) for v in now] + ["", "", last["date"], rows[-2]["date"]]
-                   + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])])
+                   + [r4(v) for v in prev[:9]] + [r4(last["open"]), r4(last["high"]), r4(last["low"])]
+                   + [r4(rows[-3]["close"]), r4(rows[-2]["low"])])
     if market == "th":
         idx = set_index_row()
         if idx:
